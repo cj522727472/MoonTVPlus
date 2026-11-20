@@ -223,7 +223,10 @@ const getBitsubModuleUrl = () =>
 const isHlsPlaybackUrl = (url: string) =>
   /\.m3u8?(?:$|[/?#])/i.test(url) ||
   url.includes('/api/proxy-m3u8') ||
-  url.includes('/api/proxy/vod/m3u8');
+  url.includes('/api/proxy/vod/m3u8') ||
+  // 网盘 HLS：夸克等网盘代理出的是 m3u8 流，但代理地址不带 .m3u8 后缀，
+  // 不显式识别会被当作普通视频直接塞进 <video src>，安卓/Chrome 内核必然报格式错误。
+  /\/api\/netdisk\/quark\/proxy/i.test(url);
 
 const PLAY_SHORTCUT_GROUPS = [
   {
