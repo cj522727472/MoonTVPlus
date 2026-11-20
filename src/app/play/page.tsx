@@ -907,7 +907,12 @@ function PlayPageClient() {
   const isM3u8LikeUrl = (url?: string) => {
     if (!url) return false;
     const normalizedUrl = url.toLowerCase();
-    return normalizedUrl.includes('.m3u8') || normalizedUrl.includes('/m3u8/');
+    return (
+      normalizedUrl.includes('.m3u8') ||
+      normalizedUrl.includes('/m3u8/') ||
+      normalizedUrl.includes('/api/netdisk/115/proxy') ||
+      normalizedUrl.includes('/api/netdisk/quark/proxy')
+    );
   };
 
   const buildAbsoluteUrl = (url: string) => {
