@@ -868,6 +868,9 @@ function PlayPageClient() {
   /** 网盘挂载视频是否启用原生 HLS（仅支持原生 HLS 的浏览器且用户开启时生效） */
   const isNetdiskNativeHlsActive = (source?: string | null) =>
     isNetdiskMountSource(source) &&
+    // netdisk-115 的 m3u8 必须带 Cookie 才能拉取，只能走 hls.js 经服务端代理播放，
+    // 不能交给浏览器原生 HLS（Chrome/安卓内核不支持，会报 DEMUXER_ERROR）。
+    source !== 'netdisk-115' &&
     supportsNativeHls &&
     netdiskHlsPlaybackMode === 'native';
 
