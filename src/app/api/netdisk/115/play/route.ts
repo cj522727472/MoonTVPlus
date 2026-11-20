@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     // 直接丢给前端会 403，统一走 /api/netdisk/115/proxy 转发 + 重写分片地址。
     const isHls = /\.m3u8(\?|$)/i.test(url);
     const playUrl = isHls
-      ? `${request.nextUrl.origin}/api/netdisk/115/proxy?u=${Buffer.from(url, 'utf8').toString('base64url')}`
+      ? `${request.nextUrl.origin}/api/netdisk/115/p/play.m3u8?u=${Buffer.from(url, 'utf8').toString('base64url')}`
       : url;
 
     if (format === 'json') {
