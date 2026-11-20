@@ -37,11 +37,18 @@ export async function GET(request: NextRequest) {
     const url = await getPan115PlayUrl(file, cookie);
     refreshPan115NetdiskSession(id);
 
+    // 115 的在线播放地址是 m3u8，且必须带登录 Cookie 才能拉取：
+    // 直接丢给前端会 403，统一走 /api/netdisk/115/proxy 转发 + 重写分片地址。
+    const isHls = /\.m3u8(\?|$)/i.test(url);
+    const playUrl = isHls
+      ? `${request.nextUrl.origin}/api/netdisk/115/proxy?u=${Buffer.from(url, 'utf8').toString('base64url')}`
+      : url;
+
     if (format === 'json') {
-      return NextResponse.json({ url, headers: {} });
+      return NextResponse.json({ url: playUrl, headers: {} });
     }
 
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(playUrl);
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : '获取播放地址失败' },
